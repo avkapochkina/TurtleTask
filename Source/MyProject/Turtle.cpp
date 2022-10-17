@@ -39,23 +39,26 @@ void ATurtle::BeginPlay()
 void ATurtle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (TimelineComponent != NULL)
+	if (TimelineComponent != nullptr)
 	{
-		TimelineComponent->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, NULL);
+		TimelineComponent->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+	}
+	else
+	{
+		printf("error");
 	}
 }
 
 void ATurtle::Movement()
 {
 	TimelineValue = TimelineComponent->GetPlaybackPosition();
-	//CurveFloatValue = RotateValue*DoorCurve->GetFloatValue(TimelineValue);
-
-	//FQuat NewRotation = FQuat(FRotator(0.f, CurveFloatValue, 0.f));
-
-	//this->SetActorLocation();
+	//delta = Speed*SpeedCurve->GetFloatValue(TimelineValue);
+	//this->SetActorLocation(this->GetActorLocation() + Speed*MovementDirection*SpeedCurve->GetFloatValue(TimelineValue));
+	this->SetActorLocation(this->GetActorLocation() + Speed*MovementDirection);
 }
 
 void ATurtle::StopMovement()
 {
+	//
 }
 

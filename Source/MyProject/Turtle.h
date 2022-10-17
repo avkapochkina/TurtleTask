@@ -25,19 +25,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundWave* MovementSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundWave* StartSound;
 	
-	FVector SpawnPoint;
-	FVector EndPoint;
-	float Speed;
+	//FVector SpawnPoint;
+	FVector MovementDirection;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Speed = 10.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurveFloat* SpeedCurve;
-	UPROPERTY()
-	float CurveFloatValue;
 	UPROPERTY()
 	float TimelineValue;
 	UPROPERTY()

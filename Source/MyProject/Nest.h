@@ -23,13 +23,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
 	UPROPERTY()
 	FVector SpawnPoint;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector EndPoint;
-
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> SpawnBP;
+	
 	UFUNCTION()
 	void Spawn();
+	UPROPERTY()
+	TArray<AActor*> SpawnQueue;
 };
