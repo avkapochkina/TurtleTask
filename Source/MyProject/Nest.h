@@ -30,8 +30,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> SpawnBP;
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Spawn();
-	UPROPERTY()
-	TArray<AActor*> SpawnQueue;
 };

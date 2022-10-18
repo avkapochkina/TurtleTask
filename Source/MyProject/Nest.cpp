@@ -17,26 +17,19 @@ ANest::ANest()
 // Called when the game starts or when spawned
 void ANest::BeginPlay()
 {
-	Super::BeginPlay();
-	if(GetWorld() && SpawnBP)
-	{
-		Spawn();
-	}
+	Super::BeginPlay();	
 }
 
 void ANest::Spawn()
 {
-	UE_LOG(LogActor, Warning, TEXT("Spawn begin"));
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.Owner = this->GetOwner();
-	ATurtle* Turtle = GetWorld()->SpawnActor<ATurtle>(SpawnBP, GetActorLocation(), GetActorRotation(), SpawnParameters);
-	UE_LOG(LogActor, Warning, TEXT("Spawn completed"));
-	if(SpawnQueue.Add(Turtle))
+	if(GetWorld() && SpawnBP)
 	{
-		UE_LOG(LogActor, Warning, TEXT("SpawnQueue.Add(Turtle)"));
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.Owner = this->GetOwner();
+		ATurtle* Turtle = GetWorld()->SpawnActor<ATurtle>(SpawnBP, GetActorLocation(), GetActorRotation(), SpawnParameters);
+		UE_LOG(LogActor, Warning, TEXT("Spawn completed"));
+		Turtle->Init(GetActorLocation(), EndPoint);
 	}
-	Turtle->Init(GetActorLocation(), EndPoint);
-	UE_LOG(LogActor, Warning, TEXT("%f, %f"), Turtle->SpawnPoint.Length(), Turtle->SpawnPoint.Length());
 }
 
 // Called every frame
