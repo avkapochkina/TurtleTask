@@ -29,6 +29,7 @@ void ANest::Spawn()
 		ATurtle* Turtle = GetWorld()->SpawnActor<ATurtle>(SpawnBP, GetActorLocation(), GetActorRotation(), SpawnParameters);
 		UE_LOG(LogActor, Warning, TEXT("Spawn completed"));
 		Turtle->Init(GetActorLocation(), EndPoint);
+		Turtles.Add(Turtle);
 	}
 }
 
@@ -36,5 +37,7 @@ void ANest::Spawn()
 void ANest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if(Turtles.Num() > TurtlesMax)
+		Turtles.Pop()->Destroy();
 }
 

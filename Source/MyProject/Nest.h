@@ -29,6 +29,11 @@ public:
 	FVector EndPoint;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> SpawnBP;
+	// Массив черепашек
+	// Одновременно в каждом гнезде существует не более TurtlesMax черепашек
+	UPROPERTY()
+	TArray<AActor*> Turtles;
+	unsigned TurtlesMax = 10;
 	
 	UFUNCTION(BlueprintCallable)
 	void Spawn();
