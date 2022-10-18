@@ -8,10 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Turtle.generated.h"
 
-class UTimelineComponent;
-
 // Базовый класс черепашек
-// Характер движения задаётся в BP
+// Характер движения задаётся в BP, EventTick
 UCLASS()
 class MYPROJECT_API ATurtle : public AActor
 {
@@ -28,6 +26,8 @@ public:
 	
 	UFUNCTION()
 	void Init(const FVector Spawn, const FVector End);
+	UFUNCTION(BlueprintCallable)
+	void Movement();
 	UFUNCTION()
 	void StopMovement();
 	
@@ -41,9 +41,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* MovementSound;
-	
+
+	UPROPERTY(BlueprintReadOnly)
 	FVector SpawnPoint;
+	UPROPERTY(BlueprintReadOnly)
 	FVector EndPoint;
+	UPROPERTY(BlueprintReadOnly)
 	FVector MovementDirection;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

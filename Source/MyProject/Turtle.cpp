@@ -25,25 +25,6 @@ void ATurtle::BeginPlay()
 void ATurtle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	// Проверяем оставшееся до EndPoint расстояние
-	// Если оно больше одного шага - продолжаем движение
-	
-	const FVector Delta = EndPoint - GetActorLocation();
-	if(Delta.Length() > Speed)
-	{
-		SetActorLocation(GetActorLocation() + Speed * MovementDirection);
-		if (AudioComponent && !AudioComponent->IsActive())
-		{
-			AudioComponent = UGameplayStatics::SpawnSound2D(this, MovementSound);
-		}
-	}
-	else
-	{
-		if (AudioComponent)
-			AudioComponent->Stop();
-		StopMovement();
-	}
 }
 
 void ATurtle::Init(const FVector Spawn, const FVector End)
@@ -60,6 +41,28 @@ void ATurtle::Init(const FVector Spawn, const FVector End)
 	if (AudioComponent)
 	{
 		AudioComponent = UGameplayStatics::SpawnSound2D(this, StartSound);
+	}
+}
+
+void ATurtle::Movement()
+{
+	// Проверяем оставшееся до EndPoint расстояние
+	// Если оно больше одного шага - продолжаем движение, меньше - отключаем звук движения и Tick
+	
+	const FVector Delta = EndPoint - GetActorLocation();
+	if(Delta.Length() > Speed)
+	{
+		SetActorLocation(GetActorLocation() + Speed * MovementDirection);
+		if (AudioComponent && !AudioComponent->IsActive())
+		{
+			AudioComponent = UGameplayStatics::SpawnSound2D(this, MovementSound);
+		}
+	}
+	else
+	{
+		if (AudioComponent)
+			AudioComponent->Stop();
+		StopMovement();
 	}
 }
 
