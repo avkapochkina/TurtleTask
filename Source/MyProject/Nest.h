@@ -25,8 +25,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
-	UPROPERTY()
-	FVector SpawnPoint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector EndPoint;
 	UPROPERTY(EditAnywhere)

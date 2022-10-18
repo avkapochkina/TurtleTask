@@ -2,14 +2,13 @@
 
 
 #include "Nest.h"
-
 #include "Turtle.h"
 
 // Sets default values
 ANest::ANest()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
@@ -19,21 +18,25 @@ ANest::ANest()
 void ANest::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnPoint = GetActorLocation();
-	Spawn();
+	if(GetWorld() && SpawnBP)
+	{
+		Spawn();
+	}
 }
 
 void ANest::Spawn()
 {
-	if(GetWorld() && SpawnBP)
+	UE_LOG(LogActor, Warning, TEXT("Spawn begin"));
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.Owner = this->GetOwner();
+	ATurtle* Turtle = GetWorld()->SpawnActor<ATurtle>(SpawnBP, GetActorLocation(), GetActorRotation(), SpawnParameters);
+	UE_LOG(LogActor, Warning, TEXT("Spawn completed"));
+	if(SpawnQueue.Add(Turtle))
 	{
-		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-		SpawnParameters.Owner = this->GetOwner();
-		ATurtle* Turtle = GetWorld()->SpawnActor<ATurtle>(SpawnBP, this->GetActorLocation(), this->GetActorRotation(), SpawnParameters);
-		SpawnQueue.Add(Turtle);
-		Turtle->MovementDirection = EndPoint - SpawnPoint;
-		//Turtle->SpawnPoint = SpawnPoint;
+		UE_LOG(LogActor, Warning, TEXT("SpawnQueue.Add(Turtle)"));
 	}
+	Turtle->Init(GetActorLocation(), EndPoint);
+	UE_LOG(LogActor, Warning, TEXT("%f, %f"), Turtle->SpawnPoint.Length(), Turtle->SpawnPoint.Length());
 }
 
 // Called every frame

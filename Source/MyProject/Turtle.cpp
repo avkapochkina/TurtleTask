@@ -3,9 +3,6 @@
 
 #include "Turtle.h"
 
-#include "Components/TimelineComponent.h"
-
-
 // Sets default values
 ATurtle::ATurtle()
 {
@@ -14,51 +11,66 @@ ATurtle::ATurtle()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 }
 
 // Called when the game starts or when spawned
 void ATurtle::BeginPlay()
 {
 	Super::BeginPlay();
-	if (SpeedCurve)
-	{
-		FOnTimelineFloat TimelineCallback;
-		FOnTimelineEventStatic TimelineFinishedCallback;
-
-		TimelineCallback.BindUFunction(this, FName("Movement"));
-		TimelineFinishedCallback.BindUFunction(this, FName("StopMovement"));
-
-		TimelineComponent = NewObject<UTimelineComponent>(this, FName("TimelineComponent"));
-		TimelineComponent->AddInterpFloat(SpeedCurve, TimelineCallback);
-		TimelineComponent->SetTimelineFinishedFunc(TimelineFinishedCallback);        
-		TimelineComponent->RegisterComponent();
-	}
+	UE_LOG(LogActor, Warning, TEXT("ATurtle::BeginPlay()"));
 }
 
 // Called every frame
 void ATurtle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (TimelineComponent != nullptr)
+	
+	// Проверяем оставшееся до EndPoint расстояние
+	// Если оно больше одного шага - продолжаем движение
+	
+	const FVector Delta = EndPoint - GetActorLocation();
+	if(Delta.Length() > Speed)
 	{
-		TimelineComponent->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+		SetActorLocation(GetActorLocation() + Speed * MovementDirection);
+		if (AudioComponent && !AudioComponent->IsActive())
+		{
+			AudioComponent = UGameplayStatics::SpawnSound2D(this, MovementSound);
+		}
 	}
 	else
 	{
-		printf("error");
+		if (AudioComponent)
+			AudioComponent->Stop();
+		StopMovement();
 	}
 }
 
-void ATurtle::Movement()
+void ATurtle::Init(const FVector Spawn, const FVector End)
 {
-	TimelineValue = TimelineComponent->GetPlaybackPosition();
-	//delta = Speed*SpeedCurve->GetFloatValue(TimelineValue);
-	//this->SetActorLocation(this->GetActorLocation() + Speed*MovementDirection*SpeedCurve->GetFloatValue(TimelineValue));
-	this->SetActorLocation(this->GetActorLocation() + Speed*MovementDirection);
+	SpawnPoint = Spawn;
+	EndPoint = End;
+	
+	MovementDirection = EndPoint - SpawnPoint;
+	MovementDirection.Normalize();
+	
+	UE_LOG(LogActor, Warning, TEXT("Turtle: %f, %f"), EndPoint.Length(), SpawnPoint.Length());
+	UE_LOG(LogActor, Warning, TEXT("MovementDirection.Length %f"), MovementDirection.Length());
+	
+	if (AudioComponent)
+	{
+		AudioComponent = UGameplayStatics::SpawnSound2D(this, StartSound);
+	}
 }
 
 void ATurtle::StopMovement()
 {
-	//
+	SetActorTickEnabled(false);
+	UE_LOG(LogActor, Error, TEXT("ATurtle::StopMovement()"));
+	
+	if (AudioComponent)
+	{
+		AudioComponent = UGameplayStatics::SpawnSound2D(this, StartSound);
+	}
 }
 
